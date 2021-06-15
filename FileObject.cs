@@ -14,13 +14,15 @@ namespace BGUFS
         private String fileName;
         private DateTime dateAndTime;
         bool isDeleted;
-        public FileObject(String fn)
+        String type;
+        public FileObject(String fn,String typeFile)
         {
             this.location = -1;
             this.length = -1;
             this.fileName = fn;
             FileInfo fi = new FileInfo(fn);
             this.dateAndTime =fi.CreationTime;
+            this.type = typeFile;
         }
 
         public int getLocation()
@@ -71,6 +73,11 @@ namespace BGUFS
         public void delete()
         {
             this.isDeleted = true;
+        }
+
+        public String getFileType()
+        {
+            return type;
         }
 
     }

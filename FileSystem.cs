@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace BGUFS
 {
+    [Serializable()]
     class FileSystem
     {
         private FileObject[] Header;
@@ -33,7 +37,7 @@ namespace BGUFS
                 }
             }
             Byte[] newFileBytes = File.ReadAllBytes(fileName);
-            FileObject f = new FileObject(fileName);
+            FileObject f = new FileObject(fileName,"origin");
             f.setLength(newFileBytes.Length);
             f.setLocation(ContentNextIndex);
             Header[HeaderNextIndex] = f;
@@ -130,7 +134,57 @@ namespace BGUFS
 
 
 
+        public void addToFile(String fileName)
+        {
+            byte[] byteFileSys = ObjectToByteArray(this);
+            File.WriteAllBytes(fileName, byteFileSys);
 
+
+
+        }
+
+        public void sortAB()
+        {
+            IComparer ABcomp = new ABComparer();
+            Array.Sort(Header,ABcomp);
+        }
+
+        public void sortByDate()
+        {
+            IComparer DateComp = new DateComp();
+            Array.Sort(Header, DateComp);
+        }
+
+        public void sortBySize()
+        {
+            IComparer sizeComp = new SizeComp();
+            Array.Sort(Header, sizeComp);
+        }
+
+        public bool LinkFile(String link,String origin)
+        {
+            for(int i = 0; i < Header.Length; i++)
+            {
+                if(Header[i].getFileName().Equals(link) && Header[i].getFileType().Equals("link"))
+                {
+                    return false;
+                }
+            }
+            for (int i = 0; i < Header.Length; i++)
+            {
+                if (Header[i].getFileName().Equals(origin))
+                {
+                    FileObject linkFile = new FileObject(link,"link");
+                    linkFile.setLength(Header[i].getLength());
+                    linkFile.setLocation(Header[i].getLocation());
+                    Header[HeaderNextIndex] = linkFile;
+                    HeaderNextIndex++;
+                    return true;
+                }
+            }
+            return false;
+        }
+            
 
 
         private string checkMD5(string filename)
@@ -144,6 +198,21 @@ namespace BGUFS
             }
         }
 
-       
+        private byte[] ObjectToByteArray(Object obj)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            using (var ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
+        }
+
+
+
     }
-}
+
+
+
+    }
+
