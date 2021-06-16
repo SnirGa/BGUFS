@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace BGUFS
 {
     class FileObject
     {
-        private int location;
-        private int length;
-        private String fileName;
-        private DateTime dateAndTime;
-        bool isDeleted;
-        String type;
+        public int location { get; set; } 
+        public int length { get; set; }
+        public String fileName { get; set; }
+    public DateTime dateAndTime { get; set; }
+        public bool isDeleted { get; set; }
+        public String type { get; set; }
+
+
         public FileObject(String fn,String typeFile)
         {
             this.location = -1;
@@ -24,6 +27,8 @@ namespace BGUFS
             this.dateAndTime =fi.CreationTime;
             this.type = typeFile;
         }
+
+       
 
         public int getLocation()
         {
@@ -79,6 +84,16 @@ namespace BGUFS
         {
             return type;
         }
+
+        /*public Byte[] serialize()
+        {
+            String output = JsonConvert.SerializeObject(this);
+            Console.WriteLine(output);
+            Byte[] byteOutput = Convert.FromBase64String(output);
+            return byteOutput; 
+        }*/
+
+        
 
     }
 

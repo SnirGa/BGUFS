@@ -11,14 +11,9 @@ namespace BGUFS
     {
         public int Compare(object x, object y)
         {
-
-            FileObject f1 = (FileObject)x;
-            FileObject f2 = (FileObject)y;
-
-            String s1 = f1.getFileName();
-            String s2 = f2.getFileName();
-
-            return String.Compare(s1, s2);
+            String[] a = (String[])x;
+            String[] b = (String[])y;
+            return String.Compare(a[0], b[0]);
         }
     }
 }
